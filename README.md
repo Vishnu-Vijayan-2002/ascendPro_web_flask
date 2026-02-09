@@ -71,44 +71,6 @@ Frontend	HTML, CSS, JavaScript
 Database	SQLite
 AI/NLP	Resume parsing, skill extraction
 Architecture	MVC (Model–View–Controller)
-📂 Project Structure
-AscendPro/
-│
-├── app.py
-├── config.py
-├── requirements.txt
-├── README.md
-│
-├── database/
-│   └── ascendpro.db
-│
-├── models/
-│   ├── user_model.py
-│   ├── job_model.py
-│   ├── application_model.py
-│   └── resume_model.py
-│
-├── routes/
-│   ├── auth_routes.py
-│   ├── admin_routes.py
-│   ├── applicant_routes.py
-│   └── company_routes.py
-│
-├── nlp/
-│   └── skill_extractor.py
-│
-├── static/
-│   ├── css/
-│   ├── js/
-│   └── admin/
-│
-├── templates/
-│   ├── admin/
-│   ├── applicant/
-│   ├── company/
-│   └── auth/
-│
-└── venv/
 
 ⚙️ Installation & Setup
 1️⃣ Clone / Download Project
