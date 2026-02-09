@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build Resume - AscendPro</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #f5f7fb;
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: white;
+      padding: 1.25rem 3rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #6366f1;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .back-btn {
+      background: transparent;
+      color: #6366f1;
+      text-decoration: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      font-size: 0.9375rem;
+      border: 2px solid #6366f1;
+    }
+
+    .back-btn:hover {
+      background: #6366f1;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .info-banner {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+    }
+
+    .info-banner h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .info-banner p {
+      opacity: 0.95;
+      line-height: 1.6;
+    }
+
+    .content {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 3px solid #6366f1;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+      font-size: 0.9375rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: #f9fafb;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #6366f1;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.6;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .dynamic-section {
+      border: 2px dashed #e5e7eb;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      background: #fafbff;
+      position: relative;
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #ef4444;
+      color: white;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .remove-btn:hover {
+      background: #dc2626;
+      transform: scale(1.1);
+    }
+
+    .add-btn {
+      background: transparent;
+      color: #6366f1;
+      border: 2px dashed #6366f1;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9375rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .add-btn:hover {
+      background: #ede9fe;
+      border-color: #4f46e5;
+    }
+
+    .submit-btn {
+      background: #6366f1;
+      color: white;
+      padding: 1rem 2.5rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1.125rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      width: 100%;
+    }
+
+    .submit-btn:hover {
+      background: #4f46e5;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .info-text {
+      color: #6b7280;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 1rem 1.5rem;
+      }
+
+      .container {
+        padding: 2rem 1rem;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+
+      h2 {
+        font-size: 2rem;
+      }
+
+      .content {
+        padding: 1.5rem;
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">AscendPro</div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <h2>Build Your Resume</h2>
+      <a href="/applicant/dashboard" class="back-btn">← Back</a>
+    </div>
+
+    <div class="info-banner">
+      <h3>🎯 Create an ATS-Friendly Resume</h3>
+      <p>Follow the form below to build a professional, ATS-optimized resume. We'll automatically calculate your ATS score and extract key skills.</p>
+    </div>
+
+    <div class="content">
+      <form method="post" id="resumeForm">
+        <!-- User ID -->
+        <div class="form-group">
+          <label for="user_id">User ID *</label>
+          <input type="number" id="user_id" name="user_id" required>
+          <span class="info-text">Your unique user identification number</span>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="form-section">
+          <div class="section-title">📋 Personal Information</div>
+          
+          <div class="form-group">
+            <label for="full_name">Full Name *</label>
+            <input type="text" id="full_name" name="full_name" placeholder="John Doe" required>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" placeholder="john@example.com" required>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone *</label>
+              <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567" required>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="location">Location</label>
+              <input type="text" id="location" name="location" placeholder="New York, NY">
+            </div>
+
+            <div class="form-group">
+              <label for="linkedin">LinkedIn</label>
+              <input type="text" id="linkedin" name="linkedin" placeholder="linkedin.com/in/johndoe">
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional Summary -->
+        <div class="form-section">
+          <div class="section-title">💼 Professional Summary</div>
+          <div class="form-group">
+            <label for="summary">Summary *</label>
+            <textarea id="summary" name="summary" placeholder="Write a brief professional summary highlighting your key achievements and career goals..." required></textarea>
+            <span class="info-text">2-3 sentences highlighting your expertise and value proposition</span>
+          </div>
+        </div>
+
+        <!-- Experience -->
+        <div class="form-section">
+          <div class="section-title">🏢 Professional Experience</div>
+          <div id="experienceContainer"></div>
+          <button type="button" class="add-btn" onclick="addExperience()">
+            <span>+</span> Add Experience
+          </button>
+          <input type="hidden" name="experience_count" id="experience_count" value="0">
+        </div>
+
+        <!-- Education -->
+        <div class="form-section">
+          <div class="section-title">🎓 Education</div>
+          <div id="educationContainer"></div>
+          <button type="button" class="add-btn" onclick="addEducation()">
+            <span>+</span> Add Education
+          </button>
+          <input type="hidden" name="education_count" id="education_count" value="0">
+        </div>
+
+        <!-- Skills -->
+        <div class="form-section">
+          <div class="section-title">🛠️ Skills</div>
+          <div class="form-group">
+            <label for="skills">Skills *</label>
+            <textarea id="skills" name="skills" placeholder="Python, JavaScript, React, Node.js, SQL, Machine Learning, Project Management, Team Leadership..." required></textarea>
+            <span class="info-text">Separate skills with commas</span>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Generate Resume & Calculate ATS Score</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let experienceCount = 0;
+    let educationCount = 0;
+
+    function addExperience() {
+      const container = document.getElementById('experienceContainer');
+      const div = document.createElement('div');
+      div.className = 'dynamic-section';
+      div.innerHTML = `
+        <button type="button" class="remove-btn" onclick="this.parentElement.remove(); updateCount('experience')">×</button>
+        <div class="form-group">
+          <label>Job Title *</label>
+          <input type="text" name="exp_title_${experienceCount}" placeholder="Software Engineer" required>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Company *</label>
+            <input type="text" name="exp_company_${experienceCount}" placeholder="Tech Corp" required>
+          </div>
+          <div class="form-group">
+            <label>Duration *</label>
+            <input type="text" name="exp_duration_${experienceCount}" placeholder="Jan 2020 - Present" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description *</label>
+          <textarea name="exp_description_${experienceCount}" placeholder="• Developed and maintained web applications
+- Collaborated with cross-functional teams
+- Improved system performance by 40%" required></textarea>
+        </div>
+      `;
+      container.appendChild(div);
+      experienceCount++;
+      document.getElementById('experience_count').value = experienceCount;
+    }
+
+    function addEducation() {
+      const container = document.getElementById('educationContainer');
+      const div = document.createElement('div');
+      div.className = 'dynamic-section';
+      div.innerHTML = `
+        <button type="button" class="remove-btn" onclick="this.parentElement.remove(); updateCount('education')">×</button>
+        <div class="form-group">
+          <label>Degree *</label>
+          <input type="text" name="edu_degree_${educationCount}" placeholder="Bachelor of Science in Computer Science" required>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Institution *</label>
+            <input type="text" name="edu_institution_${educationCount}" placeholder="University Name" required>
+          </div>
+          <div class="form-group">
+            <label>Year *</label>
+            <input type="text" name="edu_year_${educationCount}" placeholder="2016 - 2020" required>
+          </div>
+        </div>
+      `;
+      container.appendChild(div);
+      educationCount++;
+      document.getElementById('education_count').value = educationCount;
+    }
+
+    function updateCount(type) {
+      if (type === 'experience') {
+        experienceCount--;
+        document.getElementById('experience_count').value = experienceCount;
+      } else {
+        educationCount--;
+        document.getElementById('education_count').value = educationCount;
+      }
+    }
+
+    // Add initial experience and education on load
+    window.onload = function() {
+      addExperience();
+      addEducation();
+    };
+  </script>
+</body>
+</html>

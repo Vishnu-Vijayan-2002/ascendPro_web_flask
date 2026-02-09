@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - AscendPro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-dashboard.css') }}">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">AscendPro</div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active">
+                <span class="icon">📊</span>
+                <span class="text">Dashboard</span>
+            </a>
+          <a href="/admin/pending-users" class="nav-item">
+    <span class="icon">✓</span>
+    <span class="text">Approve Users</span>
+
+    {% if pending_count > 0 %}
+        <span class="badge">{{ pending_count }}</span>
+    {% endif %}
+</a>
+
+            <a href="/admin/jobs" class="nav-item">
+                <span class="icon">💼</span>
+                <span class="text">View Jobs</span>
+            </a>
+            <a href="/admin/users" class="nav-item">
+                <span class="icon">👥</span>
+                <span class="text">Manage Users</span>
+            </a>
+            <a href="/admin/companies" class="nav-item">
+                <span class="icon">🏢</span>
+                <span class="text">Companies</span>
+            </a>
+            <a href="/admin/applicants" class="nav-item">
+                <span class="icon">👤</span>
+                <span class="text">Applicants</span>
+            </a>
+            <a href="/admin/analytics" class="nav-item">
+                <span class="icon">📈</span>
+                <span class="text">Analytics</span>
+            </a>
+            <a href="/admin/reports" class="nav-item">
+                <span class="icon">📄</span>
+                <span class="text">Reports</span>
+            </a>
+            <a href="/admin/settings" class="nav-item">
+                <span class="icon">⚙️</span>
+                <span class="text">Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="avatar">AD</div>
+                <div class="admin-info">
+                    <div class="name">Admin User</div>
+                    <div class="role">Administrator</div>
+                </div>
+            </div>
+            <a href="/logout" class="logout-btn">
+                <span class="icon">🚪</span>
+                <span class="text">Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <h1>Admin Dashboard</h1>
+            </div>
+            <div class="top-bar-right">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <button class="notification-btn">
+                    <span class="icon">🔔</span>
+                    <span class="badge">5</span>
+                </button>
+                <div class="admin-avatar">AD</div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <div class="welcome-text">
+                    <h2>Welcome back, Admin! 👋</h2>
+                    <p>Here's what's happening with your platform today.</p>
+                </div>
+                <div class="quick-actions">
+                    <!-- <button class="action-btn primary">
+                        <span class="icon">➕</span>
+                        <span>Add User</span>
+                    </button> -->
+                    <!-- <button class="action-btn secondary">
+                        <span class="icon">📊</span>
+                        <span>Generate Report</span>
+                    </button> -->
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon total-users">👥</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Total Users</div>
+                        <div class="stat-value">50,247</div>
+                        <div class="stat-change positive">
+                            <span class="arrow">↑</span>
+                            <span>12.5%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon pending">⏳</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Pending Approvals</div>
+                        <div class="stat-value">12</div>
+                        <div class="stat-change neutral">
+                            <span>Needs attention</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon active-jobs">💼</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Active Jobs</div>
+                        <div class="stat-value">10,482</div>
+                        <div class="stat-change positive">
+                            <span class="arrow">↑</span>
+                            <span>8.2%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon companies">🏢</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Companies</div>
+                        <div class="stat-value">1,205</div>
+                        <div class="stat-change positive">
+                            <span class="arrow">↑</span>
+                            <span>5.3%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity & Quick Links -->
+            <div class="dashboard-grid">
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Activity</h3>
+                        <a href="#" class="view-all">View All</a>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon new-user">👤</div>
+                            <div class="activity-content">
+                                <div class="activity-title">New User Registration</div>
+                                <div class="activity-meta">John Doe registered as Applicant</div>
+                                <div class="activity-time">2 minutes ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon new-job">💼</div>
+                            <div class="activity-content">
+                                <div class="activity-title">New Job Posted</div>
+                                <div class="activity-meta">Tech Corp posted "Senior Developer"</div>
+                                <div class="activity-time">15 minutes ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon approval">✓</div>
+                            <div class="activity-content">
+                                <div class="activity-title">User Approved</div>
+                                <div class="activity-meta">ABC Company has been approved</div>
+                                <div class="activity-time">1 hour ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon application">📄</div>
+                            <div class="activity-content">
+                                <div class="activity-title">New Application</div>
+                                <div class="activity-meta">Sarah Smith applied to "UI Designer"</div>
+                                <div class="activity-time">2 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Approvals -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Pending Approvals</h3>
+                        <span class="count-badge">12</span>
+                    </div>
+                    <div class="pending-list">
+                        <div class="pending-item">
+                            <div class="pending-info">
+                                <div class="pending-avatar">JD</div>
+                                <div class="pending-details">
+                                    <div class="pending-name">John Doe</div>
+                                    <div class="pending-type">Applicant</div>
+                                </div>
+                            </div>
+                            <div class="pending-actions">
+                                <button class="btn-approve">✓</button>
+                                <button class="btn-reject">✕</button>
+                            </div>
+                        </div>
+                        <div class="pending-item">
+                            <div class="pending-info">
+                                <div class="pending-avatar">TC</div>
+                                <div class="pending-details">
+                                    <div class="pending-name">Tech Corp</div>
+                                    <div class="pending-type">Company</div>
+                                </div>
+                            </div>
+                            <div class="pending-actions">
+                                <button class="btn-approve">✓</button>
+                                <button class="btn-reject">✕</button>
+                            </div>
+                        </div>
+                        <div class="pending-item">
+                            <div class="pending-info">
+                                <div class="pending-avatar">SS</div>
+                                <div class="pending-details">
+                                    <div class="pending-name">Sarah Smith</div>
+                                    <div class="pending-type">Applicant</div>
+                                </div>
+                            </div>
+                            <div class="pending-actions">
+                                <button class="btn-approve">✓</button>
+                                <button class="btn-reject">✕</button>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/admin/pending-users" class="card-footer-link">View All Pending →</a>
+                </div>
+            </div>
+
+            <!-- Quick Access -->
+            <div class="quick-access-section">
+                <h3>Quick Access</h3>
+                <div class="quick-access-grid">
+                    <a href="/admin/pending-users" class="quick-card">
+                        <div class="quick-icon">✓</div>
+                        <div class="quick-title">Approve Users</div>
+                        <div class="quick-desc">Review pending registrations</div>
+                    </a>
+                    <a href="/admin/jobs" class="quick-card">
+                        <div class="quick-icon">💼</div>
+                        <div class="quick-title">View Jobs</div>
+                        <div class="quick-desc">Manage all job postings</div>
+                    </a>
+                    <a href="/admin/analytics" class="quick-card">
+                        <div class="quick-icon">📈</div>
+                        <div class="quick-title">Analytics</div>
+                        <div class="quick-desc">View platform insights</div>
+                    </a>
+                    <a href="/admin/reports" class="quick-card">
+                        <div class="quick-icon">📊</div>
+                        <div class="quick-title">Reports</div>
+                        <div class="quick-desc">Generate custom reports</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>

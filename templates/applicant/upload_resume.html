@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Resume - AscendPro</title>
+
+  <style>
+    /* ===== RESET ===== */
+    *{margin:0;padding:0;box-sizing:border-box}
+
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+      background:#f5f7fb;
+      min-height:100vh;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar{
+      background:#fff;
+      padding:1.25rem 3rem;
+      box-shadow:0 2px 8px rgba(0,0,0,.05);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .logo{
+      font-size:1.75rem;
+      font-weight:700;
+      color:#6366f1;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container{
+      max-width:900px;
+      margin:auto;
+      padding:3rem 2rem;
+    }
+
+    .header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:2rem;
+    }
+
+    h2{
+      font-size:2.5rem;
+      font-weight:700;
+      color:#1f2937;
+    }
+
+    .back-btn{
+      border:2px solid #6366f1;
+      color:#6366f1;
+      text-decoration:none;
+      padding:.75rem 1.5rem;
+      border-radius:12px;
+      font-weight:600;
+      transition:.3s;
+    }
+
+    .back-btn:hover{
+      background:#6366f1;
+      color:#fff;
+    }
+
+    .content{
+      background:#fff;
+      border-radius:20px;
+      padding:2.5rem;
+      box-shadow:0 4px 16px rgba(0,0,0,.08);
+    }
+
+    /* ===== MESSAGE ===== */
+    .success-message{
+      background:#d1fae5;
+      border-left:4px solid #10b981;
+      color:#065f46;
+      padding:1rem 1.5rem;
+      border-radius:12px;
+      margin-bottom:2rem;
+      font-weight:600;
+    }
+
+    /* ===== ATS SCORE ===== */
+    .ats-score-container{
+      background:linear-gradient(135deg,#667eea,#764ba2);
+      border-radius:16px;
+      padding:2rem;
+      margin-bottom:2rem;
+      color:#fff;
+    }
+
+    .score-display{
+      display:flex;
+      gap:2rem;
+      align-items:center;
+    }
+
+    .score-circle{
+      width:120px;height:120px;
+      border-radius:50%;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      background:rgba(255,255,255,.2);
+      border:3px solid rgba(255,255,255,.3);
+    }
+
+    .score-number{font-size:3rem;font-weight:700}
+
+    .score-bar{
+      height:12px;
+      background:rgba(255,255,255,.25);
+      border-radius:10px;
+      overflow:hidden;
+      margin-bottom:.5rem;
+    }
+
+    .score-bar-fill{height:100%;border-radius:10px}
+
+    .low{background:#ef4444}
+    .medium{background:#f59e0b}
+    .high{background:#10b981}
+
+    /* ===== SKILLS ===== */
+    .skills-display{
+      background:#ede9fe;
+      border-left:4px solid #6366f1;
+      padding:1rem 1.5rem;
+      border-radius:12px;
+      margin-bottom:2rem;
+      font-weight:600;
+    }
+
+    /* ===== FORM ===== */
+    form{display:flex;flex-direction:column;gap:1.5rem}
+
+    label{font-weight:600}
+
+    input[type="number"]{
+      padding:1rem;
+      border-radius:12px;
+      border:2px solid #e5e7eb;
+    }
+
+    /* ===== FILE UPLOAD ===== */
+    .file-upload-area{
+      border:2px dashed #e5e7eb;
+      border-radius:12px;
+      padding:2rem;
+      text-align:center;
+      cursor:pointer;
+    }
+
+    .browse-btn{
+      background:#6366f1;
+      color:#fff;
+      padding:.7rem 1.4rem;
+      border-radius:8px;
+      display:inline-block;
+      margin-top:1rem;
+    }
+
+    input[type="file"]{display:none}
+
+    button{
+      background:#6366f1;
+      color:#fff;
+      padding:1rem;
+      border:none;
+      border-radius:12px;
+      font-weight:600;
+      cursor:pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+  <div class="logo">AscendPro</div>
+</nav>
+
+<div class="container">
+
+  <div class="header">
+    <h2>Upload Resume</h2>
+    <a href="{{ url_for('applicant.dashboard') }}" class="back-btn">← Back</a>
+  </div>
+
+  <div class="content">
+
+    {% if message %}
+      <div class="success-message">{{ message }}</div>
+    {% endif %}
+
+    {% if ats_score is not none %}
+    <div class="ats-score-container">
+      <div class="score-display">
+        <div class="score-circle">
+          <div class="score-number">{{ ats_score }}</div>
+          <small>out of 100</small>
+        </div>
+
+        <div style="flex:1">
+          <div class="score-bar">
+            <div class="score-bar-fill
+              {% if ats_score < 50 %}low
+              {% elif ats_score < 75 %}medium
+              {% else %}high{% endif %}"
+              style="width:{{ ats_score }}%">
+            </div>
+          </div>
+          <small>
+            {% if ats_score >= 75 %}Excellent ATS Match
+            {% elif ats_score >= 50 %}Good – Needs Improvement
+            {% else %}Poor – Optimize Resume{% endif %}
+          </small>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if skills %}
+      <div class="skills-display">
+        Extracted Skills: {{ skills }}
+      </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+
+      <label>User ID</label>
+      <input type="number" name="user_id" required>
+
+      <label>Resume File</label>
+      <label class="file-upload-area">
+        Click to upload resume
+        <span class="browse-btn">Browse</span>
+        <input type="file" name="resume" accept=".pdf,.doc,.docx,.txt" required>
+      </label>
+
+      <button type="submit">Upload & Analyze</button>
+
+    </form>
+
+  </div>
+</div>
+
+</body>
+</html>
