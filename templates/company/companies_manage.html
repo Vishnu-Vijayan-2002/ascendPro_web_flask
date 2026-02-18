@@ -1,0 +1,171 @@
+{% extends "company/company_layout.html" %}
+
+{% block styles %}
+<style>
+
+/* ── Container ── */
+.co-container {
+    padding: 24px 28px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ── Breadcrumb ── */
+.co-breadcrumb {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 20px;
+}
+.co-breadcrumb a {
+    color: #94a3b8;
+    text-decoration: none;
+}
+.co-breadcrumb a:hover { color: #6366f1; }
+.co-breadcrumb span { color: #1e293b; font-weight: 500; }
+
+/* ── Page Header ── */
+.co-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.co-header h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 4px 0;
+}
+.co-header p {
+    font-size: 14px;
+    color: #94a3b8;
+    margin: 0;
+}
+
+/* ── Table Card ── */
+.co-table-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
+}
+
+.co-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.co-table thead {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.co-table th,
+.co-table td {
+    padding: 14px 16px;
+}
+
+.co-table tbody tr:hover {
+    background: #fafbff;
+}
+
+/* Status Badge */
+.co-status {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.co-status.approved { background: #d1fae5; color: #065f46; }
+.co-status.pending  { background: #fef3c7; color: #92400e; }
+
+/* Buttons */
+.co-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+.co-btn.approve { background: #d1fae5; color: #059669; }
+.co-btn.reject  { background: #fef3c7; color: #d97706; }
+.co-btn.delete  { background: #fee2e2; color: #dc2626; }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="co-container">
+
+    <!-- Breadcrumb -->
+    <div class="co-breadcrumb">
+        <a href="/admin/dashboard">Dashboard</a> / <span>Companies</span>
+    </div>
+
+    <!-- Header -->
+    <div class="co-header">
+        <div>
+            <h2>All Companies</h2>
+            <p>Manage and monitor all registered companies</p>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="co-table-card">
+        <table class="co-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Company</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% if companies %}
+                {% for company in companies %}
+                <tr>
+                    <td>#{{ company.id }}</td>
+                    <td>{{ company.name }}</td>
+                    <td>{{ company.email }}</td>
+                    <td>
+                        {% if company.approved %}
+                            <span class="co-status approved">Approved</span>
+                        {% else %}
+                            <span class="co-status pending">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not company.approved %}
+                            <a href="/admin/approve-company/{{ company.id }}"
+                               class="co-btn approve">Approve</a>
+                        {% else %}
+                         <a href="/admin/reject-company/{{ company.id }}"
+   class="co-btn reject">Reject</a>
+                        {% endif %}
+                        <a href="/admin/delete-company/{{ company.id }}"
+                           class="co-btn delete"
+                           onclick="return confirm('Delete this company?')">
+                           Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;padding:30px;">
+                        No companies found.
+                    </td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

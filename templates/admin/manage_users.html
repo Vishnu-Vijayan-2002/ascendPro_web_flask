@@ -1,0 +1,220 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+
+<style>
+
+/* PAGE */
+.page-content {
+    padding: 2rem;
+}
+
+/* HEADER */
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+/* STATS */
+.stats-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-mini {
+    background: white;
+    padding: 1.2rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.stat-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    font-size: 1.4rem;
+}
+
+.stat-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+/* TABLE */
+.table-container {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #f8fafc;
+}
+
+th {
+    padding: 14px;
+    text-align: left;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #475569;
+}
+
+td {
+    padding: 14px;
+    border-top: 1px solid #f1f5f9;
+}
+
+tr:hover {
+    background: #f8fafc;
+}
+
+/* STATUS */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-badge.active {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-badge.pending {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+/* ACTION BUTTONS */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.action-btn.toggle {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.action-btn.toggle:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.action-btn.delete {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.action-btn.delete:hover {
+    background: #dc2626;
+    color: white;
+}
+
+</style>
+
+<div class="page-content">
+
+    <div class="page-header">
+        <h1>Manage Applicants</h1>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-mini">
+            <div class="stat-icon">👥</div>
+            <div>
+                <div class="stat-value">{{ users|length }}</div>
+                <div>Total Applicants</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for user in users %}
+            <tr>
+                <td>#{{ user["id"] }}</td>
+                <td>{{ user["name"] }}</td>
+                <td>{{ user["email"] }}</td>
+                <td>
+                    {% if user["approved"] == 1 %}
+                        <span class="status-badge active">Approved</span>
+                    {% else %}
+                        <span class="status-badge pending">Pending</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="action-buttons">
+
+                        <!-- Toggle -->
+                        <a href="/admin/update-status/{{ user['id'] }}"
+                           class="action-btn toggle">
+                           {% if user["approved"] == 1 %}
+                                🔄
+                           {% else %}
+                                ✓
+                           {% endif %}
+                        </a>
+
+                        <!-- Delete -->
+                        <a href="/admin/delete-user/{{ user['id'] }}"
+                           class="action-btn delete"
+                           onclick="return confirm('Delete this user?')">
+                            🗑
+                        </a>
+
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

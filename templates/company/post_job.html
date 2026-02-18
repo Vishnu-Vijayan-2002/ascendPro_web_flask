@@ -178,6 +178,18 @@
       font-size: 0.875rem;
       margin-top: 0.25rem;
     }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+  background: #f9fafb;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  width: 100%;
+}
 
     @media (max-width: 768px) {
       .navbar {
@@ -230,26 +242,65 @@
       {% endif %}
 
       <form method="post">
-        <div class="form-group">
-          <label for="title">Job Title</label>
-          <input type="text" id="title" name="title" placeholder="e.g., Senior Software Engineer" required>
-          <span class="info-text">A clear and descriptive job title</span>
-        </div>
+  
+  <!-- Job Role -->
+  <div class="form-group">
+    <label for="role">Role</label>
+    <input type="text" id="role" name="role" placeholder="e.g., Backend Developer" required>
+  </div>
 
-        <div class="form-group">
-          <label for="company_id">Company ID</label>
-          <input type="text" id="company_id" name="company_id" placeholder="Enter your Company ID" required>
-          <span class="info-text">Your unique company identification number</span>
-        </div>
+  <!-- Company Name -->
+  <div class="form-group">
+    <label for="company_name">Company Name</label>
+    <input type="text" id="company_name" name="company_name" placeholder="Enter company name" required>
+  </div>
 
-        <div class="form-group">
-          <label for="desc">Job Description</label>
-          <textarea id="desc" name="desc" placeholder="Describe the role, responsibilities, requirements, and qualifications..." required></textarea>
-          <span class="info-text">Include key responsibilities, required skills, and qualifications</span>
-        </div>
+  <!-- Company ID -->
+  <div class="form-group">
+    <label for="company_id">Company ID</label>
+    <input type="text" id="company_id" name="company_id" placeholder="Enter your Company ID" required>
+  </div>
 
-        <button type="submit">Post Job</button>
-      </form>
+  <!-- Vacancy -->
+  <div class="form-group">
+    <label for="vacancy">Number of Vacancies</label>
+    <input type="number" id="vacancy" name="vacancy" placeholder="e.g., 3" required>
+  </div>
+
+  <!-- Job Type -->
+  <div class="form-group">
+    <label for="type">Job Type</label>
+    <select id="type" name="type" required style="padding:1rem;border-radius:12px;border:2px solid #e5e7eb;">
+      <option value="">Select Type</option>
+      <option value="Internship">Internship</option>
+      <option value="Full-Time">Full-Time</option>
+      <option value="Part-Time">Part-Time</option>
+      <option value="Contract">Contract</option>
+      <option value="Remote">Remote</option>
+    </select>
+  </div>
+
+  <!-- Salary -->
+  <div class="form-group">
+    <label for="salary">Salary (₹)</label>
+    <input type="text" id="salary" name="salary" placeholder="e.g., 6 LPA or ₹25,000/month" required>
+  </div>
+
+  <!-- Experience -->
+  <div class="form-group">
+    <label for="experience">Experience Required</label>
+    <input type="text" id="experience" name="experience" placeholder="e.g., 0-2 Years" required>
+  </div>
+
+  <!-- Job Description -->
+  <div class="form-group">
+    <label for="desc">Job Description</label>
+    <textarea id="desc" name="desc" placeholder="Responsibilities, skills, qualifications..." required></textarea>
+  </div>
+
+  <button type="submit">Post Job</button>
+</form>
+
     </div>
   </div>
 </body>

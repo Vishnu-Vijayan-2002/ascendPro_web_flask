@@ -1,2 +1,6 @@
-DATABASE = "database/ascendpro.db"
-UPLOAD_FOLDER = "static/uploads/resumes"
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+DATABASE = os.path.join(BASE_DIR, "database", "ascendpro.db")
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "static", "uploads", "resumes")

@@ -239,7 +239,7 @@
         <button class="card-button">Post New Job →</button>
       </a>
 
-      <a href="/company/applicants" class="action-card">
+      <a href="/company/applications" class="action-card">
         <div class="card-icon">👥</div>
         <div class="card-title">View Applicants</div>
         <div class="card-description">
@@ -249,23 +249,28 @@
       </a>
     </div>
 
-    <div class="stats-section">
-      <div class="stats-title">Overview</div>
-      <div class="stats-grid">
-        <div class="stat-item">
-          <span class="stat-number">0</span>
-          <span class="stat-label">Active Jobs</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">0</span>
-          <span class="stat-label">Total Applicants</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">0</span>
-          <span class="stat-label">Shortlisted</span>
-        </div>
-      </div>
+   <div class="stats-section">
+  <div class="stats-title">Overview</div>
+  <div class="stats-grid">
+
+    <div class="stat-item">
+      <span class="stat-number">{{ active_jobs }}</span>
+      <span class="stat-label">Active Jobs</span>
     </div>
+
+    <div class="stat-item">
+      <span class="stat-number">{{ total_applicants }}</span>
+      <span class="stat-label">Total Applicants</span>
+    </div>
+
+    <div class="stat-item">
+      <span class="stat-number">{{ shortlisted }}</span>
+      <span class="stat-label">Shortlisted</span>
+    </div>
+
+  </div>
+</div>
+
   </div>
 </body>
 </html>

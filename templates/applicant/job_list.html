@@ -1,271 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Available Jobs - AscendPro</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Available Jobs - AscendPro</title>
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: #f5f7fb;
-      min-height: 100vh;
-    }
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
 
-    .navbar {
-      background: white;
-      padding: 1.25rem 3rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+body {
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg,#eef2ff,#f8fafc);
+  min-height:100vh;
+}
 
-    .logo {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: #6366f1;
-    }
+.navbar {
+  background:white;
+  padding:1.2rem 3rem;
+  box-shadow:0 4px 15px rgba(0,0,0,0.05);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    .nav-links {
-      display: flex;
-      gap: 2.5rem;
-      align-items: center;
-    }
+.logo {
+  font-size:1.8rem;
+  font-weight:800;
+  color:#4f46e5;
+  letter-spacing:0.5px;
+}
 
-    .nav-link {
-      color: #1f2937;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.9375rem;
-      transition: color 0.3s ease;
-    }
+.container {
+  max-width:1100px;
+  margin:0 auto;
+  padding:3rem 2rem;
+}
 
-    .nav-link:hover {
-      color: #6366f1;
-    }
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:2rem;
+}
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 3rem 2rem;
-    }
+h2 {
+  font-size:2.2rem;
+  font-weight:800;
+  color:#1f2937;
+}
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
+.back-btn {
+  border:2px solid #4f46e5;
+  padding:0.6rem 1.4rem;
+  border-radius:30px;
+  text-decoration:none;
+  color:#4f46e5;
+  font-weight:600;
+  transition:all 0.3s ease;
+}
 
-    h2 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #1f2937;
-    }
+.back-btn:hover {
+  background:#4f46e5;
+  color:white;
+}
 
-    .back-btn {
-      background: transparent;
-      color: #6366f1;
-      text-decoration: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 12px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      font-size: 0.9375rem;
-      border: 2px solid #6366f1;
-    }
+.job-card {
+  background:white;
+  border-radius:20px;
+  margin-bottom:1.5rem;
+  padding:2rem;
+  box-shadow:0 8px 25px rgba(0,0,0,0.06);
+  transition:all 0.3s ease;
+  border:1px solid transparent;
+}
 
-    .back-btn:hover {
-      background: #6366f1;
-      color: white;
-      transform: translateY(-2px);
-    }
+.job-card:hover {
+  transform:translateY(-5px);
+  border-color:#4f46e5;
+  box-shadow:0 15px 40px rgba(79,70,229,0.15);
+}
 
-    .content {
-      background: white;
-      border-radius: 20px;
-      padding: 2.5rem;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    }
+.job-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:1rem;
+}
 
-    .table-container {
-      overflow-x: auto;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-    }
+.job-title {
+  font-size:1.4rem;
+  font-weight:700;
+  color:#111827;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
+.company-name {
+  font-size:0.95rem;
+  color:#6b7280;
+  margin-top:4px;
+}
 
-    thead {
-      background: #f9fafb;
-      border-bottom: 2px solid #e5e7eb;
-    }
+.job-meta {
+  display:flex;
+  gap:1rem;
+  flex-wrap:wrap;
+  margin:1rem 0;
+}
 
-    th {
-      padding: 1.25rem 1.5rem;
-      text-align: left;
-      font-weight: 700;
-      font-size: 0.875rem;
-      color: #1f2937;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+.meta-pill {
+  background:#f1f5f9;
+  padding:0.5rem 1rem;
+  border-radius:20px;
+  font-size:0.85rem;
+  font-weight:600;
+  color:#334155;
+}
 
-    td {
-      padding: 1.5rem 1.5rem;
-      border-bottom: 1px solid #f3f4f6;
-      color: #1f2937;
-      font-size: 0.9375rem;
-    }
+.description {
+  margin:1rem 0 1.5rem 0;
+  color:#4b5563;
+  line-height:1.6;
+}
 
-    tr:last-child td {
-      border-bottom: none;
-    }
+.apply-btn {
+  background:#4f46e5;
+  color:white;
+  padding:0.75rem 2rem;
+  border-radius:30px;
+  text-decoration:none;
+  font-weight:600;
+  display:inline-block;
+  transition:all 0.3s ease;
+}
 
-    tbody tr {
-      transition: background-color 0.2s ease;
-    }
+.apply-btn:hover {
+  background:#4338ca;
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(79,70,229,0.3);
+}
 
-    tbody tr:hover {
-      background-color: #f9fafb;
-    }
+.apply-btn.disabled {
+  background:#9ca3af;
+  cursor:not-allowed;
+}
 
-    .job-title {
-      font-weight: 700;
-      color: #1f2937;
-      font-size: 1.0625rem;
-    }
+.status-badge {
+  padding:0.4rem 1rem;
+  border-radius:20px;
+  font-size:0.8rem;
+  font-weight:700;
+}
 
-    .job-description {
-      color: #6b7280;
-      line-height: 1.6;
-    }
+.status-applied {
+  background:#fef3c7;
+  color:#92400e;
+}
 
-    .apply-btn {
-      background: #6366f1;
-      color: white;
-      text-decoration: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 12px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      display: inline-block;
-      font-size: 0.9375rem;
-    }
+.status-shortlisted {
+  background:#d1fae5;
+  color:#065f46;
+}
 
-    .apply-btn:hover {
-      background: #4f46e5;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
-    }
+.status-rejected {
+  background:#fee2e2;
+  color:#991b1b;
+}
 
-    .empty-state {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: #6b7280;
-    }
+.status-accepted {
+  background:#bbf7d0;
+  color:#065f46;
+}
 
-    .empty-state-icon {
-      font-size: 4rem;
-      margin-bottom: 1rem;
-      opacity: 0.5;
-    }
-
-    .empty-state-text {
-      font-size: 1.125rem;
-      font-weight: 500;
-    }
-
-    @media (max-width: 768px) {
-      .navbar {
-        padding: 1rem 1.5rem;
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      .container {
-        padding: 2rem 1rem;
-      }
-
-      .header {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-      }
-
-      h2 {
-        font-size: 2rem;
-      }
-
-      .content {
-        padding: 1.5rem;
-      }
-
-      th, td {
-        padding: 1rem;
-        font-size: 0.875rem;
-      }
-
-      .table-container {
-        border-radius: 8px;
-      }
-
-      .job-title {
-        font-size: 1rem;
-      }
-    }
-  </style>
+.empty {
+  text-align:center;
+  padding:4rem;
+  font-size:1.1rem;
+  color:#6b7280;
+}
+</style>
 </head>
+
 <body>
-  <nav class="navbar">
-    <div class="logo">AscendPro</div>
-    <!-- <div class="nav-links">
-      <a href="/" class="nav-link">Home</a>
-      <a href="/features" class="nav-link">Features</a>
-      <a href="/modules" class="nav-link">Modules</a>
-    </div> -->
-  </nav>
 
-  <div class="container">
-    <div class="header">
-      <h2>Available Jobs</h2>
-      <a href="/applicant/dashboard" class="back-btn">← Back</a>
-    </div>
+<nav class="navbar">
+  <div class="logo">AscendPro</div>
+</nav>
 
-    <div class="content">
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Job Title</th>
-              <th>Description</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for j in jobs %}
-            <tr>
-              <td class="job-title">{{ j[1] }}</td>
-              <td class="job-description">{{ j[2] }}</td>
-              <td>
-                <a href="/applicant/apply/{{ j[0] }}/1" class="apply-btn">Apply Now</a>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+<div class="container">
+
+<div class="header">
+  <h2>Available Jobs</h2>
+  <a href="/applicant/dashboard" class="back-btn">← Back</a>
+</div>
+
+{% if jobs %}
+  {% for j in jobs %}
+
+  <div class="job-card">
+
+    <div class="job-header">
+      <div>
+        <div class="job-title">{{ j[1] }}</div>
+        <div class="company-name">
+          {{ j[5] if j[5] else j[3] }}
+        </div>
       </div>
+
+      {% if j[0] in applied_jobs %}
+        {% set status = applied_jobs[j[0]] %}
+        <div class="status-badge status-{{ status|lower }}">
+          {{ status }}
+        </div>
+      {% endif %}
     </div>
+
+    <div class="job-meta">
+      <div class="meta-pill">💰 ₹{{ j[8] if j[8] else 'N/A' }}</div>
+      <div class="meta-pill">🧑‍💼 {{ j[9] if j[9] else '0' }} yrs</div>
+      <div class="meta-pill">📌 {{ j[6] if j[6] else 'N/A' }} openings</div>
+      <div class="meta-pill">🏷 {{ j[7] if j[7] else 'N/A' }}</div>
+    </div>
+
+    <div class="description">
+      {{ j[2] if j[2] else 'No description provided.' }}
+    </div>
+
+    {% if j[0] in applied_jobs %}
+      <button class="apply-btn disabled" disabled>
+        Already Applied
+      </button>
+    {% else %}
+      <a href="{{ url_for('applicant.apply', job_id=j[0]) }}" class="apply-btn">
+        Apply Now →
+      </a>
+    {% endif %}
+
   </div>
+
+  {% endfor %}
+{% else %}
+  <div class="empty">
+    No jobs available at the moment.
+  </div>
+{% endif %}
+
+</div>
+
 </body>
 </html>

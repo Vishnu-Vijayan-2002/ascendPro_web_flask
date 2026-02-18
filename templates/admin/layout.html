@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel - AscendPro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-dashboard.css') }}">
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+
+    <!-- Logo -->
+    <div class="sidebar-header">
+        <div class="logo">AscendPro</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+
+        <a href="/admin/dashboard"
+           class="nav-item {% if request.path == '/admin/dashboard' %}active{% endif %}">
+            <span class="icon">📊</span>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="/admin/pending-users"
+           class="nav-item {% if request.path == '/admin/pending-users' %}active{% endif %}">
+            <span class="icon">✓</span>
+            <span>Approve Users</span>
+            {% if pending_count and pending_count > 0 %}
+            <span class="badge">{{ pending_count }}</span>
+            {% endif %}
+        </a>
+
+        <a href="/admin/jobs"
+           class="nav-item {% if request.path == '/admin/jobs' %}active{% endif %}">
+            <span class="icon">💼</span>
+            <span>View Jobs</span>
+        </a>
+
+        <a href="/admin/users"
+           class="nav-item {% if request.path == '/admin/users' %}active{% endif %}">
+            <span class="icon">👥</span>
+            <span>Manage Users</span>
+        </a>
+
+        <a href="/admin/companies"
+           class="nav-item {% if request.path == '/admin/companies' %}active{% endif %}">
+            <span class="icon">🏢</span>
+            <span>Companies</span>
+        </a>
+
+        <!-- <a href="#" class="nav-item">
+            <span class="icon">👤</span>
+            <span>Applicants</span>
+        </a>
+
+        <a href="#" class="nav-item">
+            <span class="icon">📈</span>
+            <span>Analytics</span>
+        </a>
+
+        <a href="#" class="nav-item">
+            <span class="icon">⚙️</span>
+            <span>Settings</span>
+        </a> -->
+
+    </nav>
+
+    <!-- Profile Section -->
+    <div class="sidebar-footer">
+        <div class="admin-profile">
+            <div class="avatar">AD</div>
+            <div>
+                <div class="admin-name">Admin User</div>
+            </div>
+        </div>
+
+        <a href="/login" class="logout-btn">Logout</a>
+    </div>
+
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main-content">
+
+    <header class="top-bar">
+        <h2>Admin Panel</h2>
+    </header>
+
+    <div class="page-wrapper">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</main>
+
+</body>
+</html>

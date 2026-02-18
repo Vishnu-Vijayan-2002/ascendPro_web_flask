@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Applicants List - AscendPro</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f7fb;
+  padding: 40px;
+}
+
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+h2 {
+  margin:0;
+}
+
+.back-btn {
+  background:#6366f1;
+  color:white;
+  padding:8px 16px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:600;
+  font-size:14px;
+  transition:0.3s;
+}
+
+.back-btn:hover {
+  background:#4f46e5;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background: #6366f1;
+  color: white;
+}
+
+tr:hover {
+  background: #f9fafb;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-pending { background: #fef3c7; color: #92400e; }
+.status-shortlisted { background: #d1fae5; color: #065f46; }
+.status-rejected { background: #fee2e2; color: #991b1b; }
+.status-accepted { background: #c7f9cc; color: #14532d; }
+
+.btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  margin-right: 5px;
+  display: inline-block;
+}
+
+.view-btn { background: #10b981; }
+.shortlist-btn { background: #6366f1; }
+.accept-btn { background: #059669; }
+.reject-btn { background: #dc2626; }
+
+.btn:hover {
+  opacity:0.85;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h2>Applicants List</h2>
+  <a href="/company/dashboard" class="back-btn">← Back to Dashboard</a>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Applicant</th>
+      <th>Job Title</th>
+      <th>Status</th>
+      <th>Resume</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for a in data %}
+    <tr>
+      <td>{{ a[0] }}</td>
+      <td><strong>{{ a[1] }}</strong></td>
+      <td>{{ a[2] }}</td>
+
+      <td>
+        <span class="status-badge 
+          {% if a[3] == 'Shortlisted' %}status-shortlisted
+          {% elif a[3] == 'Rejected' %}status-rejected
+          {% elif a[3] == 'Accepted' %}status-accepted
+          {% else %}status-pending{% endif %}">
+          {{ a[3] }}
+        </span>
+      </td>
+
+      <td>
+        {% if a[5] %}
+          <a href="/company/view-resume/{{ a[5] }}" target="_blank" class="btn view-btn">
+            View Resume
+          </a>
+        {% else %}
+          No Resume
+        {% endif %}
+      </td>
+
+      <td>
+        <a href="/company/update-status/{{ a[0] }}/Shortlisted" class="btn shortlist-btn">
+          Shortlist
+        </a>
+
+        <a href="/company/update-status/{{ a[0] }}/Accepted" class="btn accept-btn">
+          Accept
+        </a>
+
+        <a href="/company/update-status/{{ a[0] }}/Rejected" class="btn reject-btn">
+          Reject
+        </a>
+
+        <a href="/company/delete-application/{{ a[0] }}"
+           onclick="return confirm('Are you sure you want to delete this application?');"
+           class="btn reject-btn">
+           Delete
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+</body>
+</html>

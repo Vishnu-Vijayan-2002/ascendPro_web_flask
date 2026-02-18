@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.secret_key = "ascendpro_secret"
 
 # ===============================
-# CONTEXT PROCESSOR (IMPORTANT)
+# CONTEXT PROCESSOR
 # ===============================
 @app.context_processor
 def inject_pending_count():
@@ -32,7 +32,9 @@ def inject_pending_count():
 app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp, url_prefix="/admin")
 app.register_blueprint(applicant_bp, url_prefix="/applicant")
-app.register_blueprint(company_bp, url_prefix="/company")
+
+# IMPORTANT FIX HERE 👇
+app.register_blueprint(company_bp)
 
 # ===============================
 # HOME PAGE
