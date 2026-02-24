@@ -132,15 +132,15 @@ tr:hover {
         </span>
       </td>
 
-      <td>
-        {% if a[5] %}
-          <a href="/company/view-resume/{{ a[5] }}" target="_blank" class="btn view-btn">
-            View Resume
-          </a>
-        {% else %}
-          No Resume
-        {% endif %}
-      </td>
+  <td>
+  {% if a[4] %}
+    <a href="/company/view-resume/{{ a[4] }}" target="_blank" class="btn view-btn">
+      View Resume
+    </a>
+  {% else %}
+    No Resume
+  {% endif %}
+</td>
 
       <td>
         <a href="/company/update-status/{{ a[0] }}/Shortlisted" class="btn shortlist-btn">

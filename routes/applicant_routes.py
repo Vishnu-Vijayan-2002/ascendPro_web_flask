@@ -66,45 +66,131 @@ def extract_text_from_txt(file):
 @applicant_bp.route("/dashboard")
 def dashboard():
 
+    if session.get("role") != "applicant":
+        return redirect("/login")
+
     user_id = session.get("user_id")
 
     total_applications = 0
     shortlisted = 0
     accepted = 0
+    user = None
+    preferred_job = None   # 👈 NEW
 
-    if user_id:
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
 
-        # Total Applications
-        cur.execute("SELECT COUNT(*) FROM applications WHERE user_id = ?", (user_id,))
-        total_applications = cur.fetchone()[0]
+    # 🔹 Get User Details
+    cur.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+    user = cur.fetchone()
 
-        # Shortlisted
-        cur.execute("""
-            SELECT COUNT(*) FROM applications 
-            WHERE user_id = ? AND status = 'Shortlisted'
-        """, (user_id,))
-        shortlisted = cur.fetchone()[0]
+    # 🔹 Get Preferred Job
+    cur.execute("""
+        SELECT job_type 
+        FROM user_preferences 
+        WHERE user_id = ?
+    """, (user_id,))
+    pref = cur.fetchone()
 
-        # Accepted
-        cur.execute("""
-            SELECT COUNT(*) FROM applications 
-            WHERE user_id = ? AND status = 'Accepted'
-        """, (user_id,))
-        accepted = cur.fetchone()[0]
+    if pref:
+        preferred_job = pref["job_type"]
 
-        conn.close()
+    # 🔹 Total Applications
+    cur.execute("SELECT COUNT(*) FROM applications WHERE user_id = ?", (user_id,))
+    total_applications = cur.fetchone()[0]
+
+    # 🔹 Shortlisted
+    cur.execute("""
+        SELECT COUNT(*) FROM applications 
+        WHERE user_id = ? AND status = 'Shortlisted'
+    """, (user_id,))
+    shortlisted = cur.fetchone()[0]
+
+    # 🔹 Accepted
+    cur.execute("""
+        SELECT COUNT(*) FROM applications 
+        WHERE user_id = ? AND status = 'Accepted'
+    """, (user_id,))
+    accepted = cur.fetchone()[0]
+
+    conn.close()
 
     return render_template(
         "applicant/dashboard.html",
+        user=user,
         total_applications=total_applications,
         shortlisted=shortlisted,
-        accepted=accepted
+        accepted=accepted,
+        preferred_job=preferred_job   # 👈 PASS TO TEMPLATE
     )
 
+@applicant_bp.route("/update-profile", methods=["POST"])
+def update_profile():
 
+    if "user_id" not in session:
+        return redirect("/login")
 
+    user_id = session["user_id"]
+    name = request.form["name"]
+    email = request.form["email"]
+
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE users
+        SET name = ?, email = ?
+        WHERE id = ?
+    """, (name, email, user_id))
+
+    conn.commit()
+    conn.close()
+
+    # 🔥 Update session after DB update
+    session["user_name"] = name
+    session["user_email"] = email
+
+    return redirect("/applicant/profile")
+@applicant_bp.route("/update-password", methods=["POST"])
+def update_password():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    new_password = request.form["new_password"]
+    hashed_password = generate_password_hash(new_password)
+
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE users
+        SET password = ?
+        WHERE id = ?
+    """, (hashed_password, session["user_id"]))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/applicant/profile.html")
+# profile 
+@applicant_bp.route("/profile")
+def profile():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM users WHERE id = ?", (session["user_id"],))
+    user = cur.fetchone()
+
+    conn.close()
+
+    return render_template("applicant/profile.html", user=user)
 # ── Upload Resume ──────────────────────────────────────────────────
 @applicant_bp.route("/upload-resume", methods=["GET", "POST"])
 def upload_resume():
@@ -170,6 +256,39 @@ def upload_resume():
                            message=message, skills=skills, ats_score=ats_score)
 
 
+# ── Job Preferences ───────────────────────────────────────────────
+@applicant_bp.route("/job-preference")
+def job_preference():
+    if session.get("role") != "applicant":
+        return redirect("/login")
+    return render_template("applicant/job_preference.html")
+
+
+@applicant_bp.route("/save-preference", methods=["POST"])
+def save_preference():
+
+    if session.get("role") != "applicant":
+        return redirect("/login")
+
+    user_id = session["user_id"]
+    job_type = request.form["job_type"]
+
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
+
+    # Delete old preference
+    cur.execute("DELETE FROM user_preferences WHERE user_id = ?", (user_id,))
+
+    # Insert new preference (location_type = NULL)
+    cur.execute("""
+        INSERT INTO user_preferences (user_id, job_type)
+        VALUES (?, ?)
+    """, (user_id, job_type))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/applicant/jobs")
 # ── Build Resume ───────────────────────────────────────────────────
 @applicant_bp.route("/build-resume", methods=["GET", "POST"])
 def build_resume():
@@ -285,42 +404,38 @@ def download_resume(resume_id):
 
 # ── View Jobs ──────────────────────────────────────────────────────
 @applicant_bp.route("/jobs")
-def jobs():
+def view_jobs():
 
-    user_id = session.get("user_id")
+    if session.get("role") != "applicant":
+        return redirect("/login")
+
+    user_id = session["user_id"]
 
     conn = sqlite3.connect(DATABASE)
-    cur  = conn.cursor()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
 
-    # Get all jobs
-    cur.execute("SELECT * FROM jobs")
-    jobs = cur.fetchall()
+    # Get preference
+    cur.execute("""
+        SELECT job_type
+        FROM user_preferences
+        WHERE user_id = ?
+    """, (user_id,))
+    pref = cur.fetchone()
 
-    applied_jobs = {}
-
-    # If user logged in → fetch their applications
-    if user_id:
+    if pref:
         cur.execute("""
-            SELECT job_id, status 
-            FROM applications 
-            WHERE user_id = ?
-        """, (user_id,))
+            SELECT *
+            FROM jobs
+            WHERE type = ?
+        """, (pref["job_type"],))  # 👈 USE type here
+    else:
+        cur.execute("SELECT * FROM jobs")
 
-        applications = cur.fetchall()
-
-        # Convert to dictionary
-        # { job_id: status }
-        applied_jobs = {app[0]: app[1] for app in applications}
-
+    jobs = cur.fetchall()
     conn.close()
 
-    return render_template(
-        "applicant/job_list.html",
-        jobs=jobs,
-        applied_jobs=applied_jobs
-    )
-
-
+    return render_template("applicant/job_list.html", jobs=jobs)
 # ── Apply for Job ──────────────────────────────────────────────────
 @applicant_bp.route("/apply/<int:job_id>", methods=["GET", "POST"])
 def apply(job_id):

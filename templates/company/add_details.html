@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Company Details - AscendPro</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg,#6366f1,#8b5cf6);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.container{
+  width:100%;
+  max-width:700px;
+}
+
+.form-card{
+  background:white;
+  padding:40px;
+  border-radius:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.15);
+  animation: fadeIn 0.5s ease;
+}
+
+h2{
+  text-align:center;
+  margin-bottom:30px;
+  font-size:26px;
+  color:#1f2937;
+}
+
+label{
+  font-weight:600;
+  font-size:14px;
+  color:#374151;
+}
+
+input, textarea{
+  width:100%;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+  margin-top:6px;
+  margin-bottom:20px;
+  font-size:14px;
+  transition:0.3s ease;
+}
+
+input:focus, textarea:focus{
+  border-color:#6366f1;
+  outline:none;
+  box-shadow:0 0 0 3px rgba(99,102,241,0.15);
+}
+
+textarea{
+  resize:none;
+  height:100px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:white;
+  font-weight:600;
+  font-size:15px;
+  cursor:pointer;
+  transition:0.3s ease;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 20px rgba(0,0,0,0.2);
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+@media(max-width:600px){
+  .form-card{
+    padding:25px;
+  }
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+  <div class="form-card">
+
+    <h2>Complete Your Company Profile</h2>
+
+    <form method="POST">
+
+      <label>Company Name</label>
+      <input type="text" name="company_name" required>
+
+      <label>Industry</label>
+      <input type="text" name="industry" required>
+
+      <label>Website</label>
+      <input type="text" name="website">
+
+      <label>Location</label>
+      <input type="text" name="location">
+
+      <label>Company Description</label>
+      <textarea name="description"></textarea>
+
+      <button type="submit">Save Company Details</button>
+
+    </form>
+
+  </div>
+</div>
+
+</body>
+</html>

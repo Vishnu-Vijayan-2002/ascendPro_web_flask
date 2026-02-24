@@ -1,8 +1,17 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, session
 import sqlite3
 from config import DATABASE
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
+
+
+# ==============================
+# ADMIN PROTECTION HELPER
+# ==============================
+def admin_required():
+    if session.get("role") != "admin":
+        return False
+    return True
 
 
 # ==============================
@@ -11,40 +20,31 @@ admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 @admin_bp.route("/dashboard")
 def dashboard():
 
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
+    if not admin_required():
+        return redirect("/login")
 
-    # Total users
-    cur.execute("SELECT COUNT(*) FROM users")
-    total_users = cur.fetchone()[0]
+    with sqlite3.connect(DATABASE) as conn:
+        cur = conn.cursor()
 
-    # Pending users
-    cur.execute("SELECT COUNT(*) FROM users WHERE approved = 0")
-    pending_users = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM users")
+        total_users = cur.fetchone()[0]
 
-    # Active jobs
-    cur.execute("SELECT COUNT(*) FROM jobs")
-    active_jobs = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM users WHERE approved = 0")
+        pending_users = cur.fetchone()[0]
 
-    # Companies (case safe)
-    cur.execute("SELECT COUNT(*) FROM users WHERE LOWER(role) = 'company'")
-    total_companies = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM jobs")
+        active_jobs = cur.fetchone()[0]
 
-    # Role-wise count (Pie Chart)
-    cur.execute("SELECT LOWER(role), COUNT(*) FROM users GROUP BY LOWER(role)")
-    role_data = cur.fetchall()
+        cur.execute("SELECT COUNT(*) FROM users WHERE role = 'company'")
+        total_companies = cur.fetchone()[0]
 
-    # Initialize counts
-    role_counts = {
-        "admin": 0,
-        "company": 0,
-        "applicant": 0
-    }
+        cur.execute("SELECT role, COUNT(*) FROM users GROUP BY role")
+        role_data = cur.fetchall()
+
+    role_counts = {"admin": 0, "company": 0, "applicant": 0}
 
     for r in role_data:
         role_counts[r[0]] = r[1]
-
-    conn.close()
 
     return render_template(
         "admin/dashboard.html",
@@ -61,19 +61,22 @@ def dashboard():
 # ==============================
 @admin_bp.route("/pending-users")
 def pending_users():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
 
-    cur.execute("""
-        SELECT id, name, email, role 
-        FROM users 
-        WHERE approved = 0
-        ORDER BY id DESC
-    """)
-    users = cur.fetchall()
+    if not admin_required():
+        return redirect("/login")
 
-    conn.close()
+    with sqlite3.connect(DATABASE) as conn:
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT id, name, email, role
+            FROM users
+            WHERE approved = 0
+            ORDER BY id DESC
+        """)
+        users = cur.fetchall()
+
     return render_template("admin/users.html", users=users)
 
 
@@ -81,75 +84,148 @@ def pending_users():
 # Approve User
 # ==============================
 @admin_bp.route("/approve/<int:uid>")
-def approve(uid):
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
+def approve_user(uid):
 
-    cur.execute("UPDATE users SET approved = 1 WHERE id = ?", (uid,))
-    conn.commit()
-    conn.close()
+    if not admin_required():
+        return redirect("/login")
+
+    with sqlite3.connect(DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET approved = 1 WHERE id = ?", (uid,))
+        conn.commit()
 
     return redirect("/admin/pending-users")
 
 
 # ==============================
-# Manage Applicants (All Applicants)
+# Companies (With Verification)
 # ==============================
+@admin_bp.route("/companies")
+def companies():
+
+    if not admin_required():
+        return redirect("/login")
+
+    with sqlite3.connect(DATABASE) as conn:
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT users.id, users.name, users.email, users.approved,
+                   company_details.verified
+            FROM users
+            LEFT JOIN company_details
+            ON users.id = company_details.user_id
+            WHERE users.role = 'company'
+            ORDER BY users.id DESC
+        """)
+        companies = cur.fetchall()
+
+    return render_template("admin/companies_manage.html", companies=companies)
+
+
 # ==============================
-# Manage Applicants (All Applicants)
+# Verify Company (Official)
+# ==============================
+@admin_bp.route("/verify-company/<int:user_id>")
+def verify_company(user_id):
+
+    if not admin_required():
+        return redirect("/login")
+
+    with sqlite3.connect(DATABASE) as conn:
+        cur = conn.cursor()
+
+        cur.execute("""
+            UPDATE company_details
+            SET verified = 1
+            WHERE user_id = ?
+        """, (user_id,))
+
+        conn.commit()
+
+    return redirect(url_for("admin.companies"))
+
+
+# ==============================
+# Delete Company
+# ==============================
+@admin_bp.route("/delete-company/<int:company_id>")
+def delete_company(company_id):
+
+    if not admin_required():
+        return redirect("/login")
+
+    with sqlite3.connect(DATABASE) as conn:
+        cur = conn.cursor()
+
+        cur.execute("DELETE FROM users WHERE id = ?", (company_id,))
+        cur.execute("DELETE FROM company_details WHERE user_id = ?", (company_id,))
+        conn.commit()
+
+    return redirect(url_for("admin.companies"))
+
+
+# ==============================
+# Manage Applicants
 # ==============================
 @admin_bp.route("/users")
 def manage_users():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
 
-    # Debug (optional - remove later)
-    print("Using database:", DATABASE)
+    if not admin_required():
+        return redirect("/login")
 
-    cur.execute("""
-        SELECT id, name, email, role, approved
-        FROM users
-        WHERE role = ?
-        ORDER BY id DESC
-    """, ("applicant",))
+    with sqlite3.connect(DATABASE) as conn:
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
 
-    users = cur.fetchall()
+        cur.execute("""
+            SELECT id, name, email, role, approved
+            FROM users
+            WHERE role = 'applicant'
+            ORDER BY id DESC
+        """)
+        users = cur.fetchall()
 
-    conn.close()
+    return render_template("admin/manage_users.html", users=users)
 
-    return render_template(
-        "admin/manage_users.html",
-        users=users
-    )
 
-# Toggle status
+# ==============================
+# Toggle User Status
+# ==============================
 @admin_bp.route("/update-status/<int:user_id>")
-def update_status(user_id):
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
+def update_user_status(user_id):
 
-    cur.execute("SELECT approved FROM users WHERE id = ?", (user_id,))
-    current = cur.fetchone()[0]
+    if not admin_required():
+        return redirect("/login")
 
-    new_status = 0 if current == 1 else 1
+    with sqlite3.connect(DATABASE) as conn:
+        cur = conn.cursor()
 
-    cur.execute("UPDATE users SET approved = ? WHERE id = ?", (new_status, user_id))
-    conn.commit()
-    conn.close()
+        cur.execute("SELECT approved FROM users WHERE id = ?", (user_id,))
+        current = cur.fetchone()[0]
+
+        new_status = 0 if current == 1 else 1
+
+        cur.execute("UPDATE users SET approved = ? WHERE id = ?", (new_status, user_id))
+        conn.commit()
 
     return redirect("/admin/users")
 
 
-# Delete user
+# ==============================
+# Delete User
+# ==============================
 @admin_bp.route("/delete-user/<int:user_id>")
 def delete_user(user_id):
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
 
-    cur.execute("DELETE FROM users WHERE id = ?", (user_id,))
-    conn.commit()
-    conn.close()
+    if not admin_required():
+        return redirect("/login")
+
+    with sqlite3.connect(DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        conn.commit()
 
     return redirect("/admin/users")
 
@@ -159,29 +235,27 @@ def delete_user(user_id):
 # ==============================
 @admin_bp.route("/jobs")
 def jobs():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
 
-    cur.execute("""
-        SELECT id, role, company_name, company_id,
-               vacancy, type, salary, experience,
-               description, created_at
-        FROM jobs
-        ORDER BY datetime(created_at) DESC
-    """)
-    jobs = cur.fetchall()
+    if not admin_required():
+        return redirect("/login")
 
-    cur.execute("SELECT COUNT(*) FROM jobs")
-    total_jobs = cur.fetchone()[0]
+    with sqlite3.connect(DATABASE) as conn:
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
 
-    conn.close()
+        cur.execute("""
+            SELECT id, role, company_name, company_id,
+                   vacancy, type, salary, experience,
+                   description, created_at
+            FROM jobs
+            ORDER BY datetime(created_at) DESC
+        """)
+        jobs = cur.fetchall()
 
-    return render_template(
-        "admin/jobs.html",
-        jobs=jobs,
-        total_jobs=total_jobs
-    )
+        cur.execute("SELECT COUNT(*) FROM jobs")
+        total_jobs = cur.fetchone()[0]
+
+    return render_template("admin/jobs.html", jobs=jobs, total_jobs=total_jobs)
 
 
 # ==============================
@@ -189,12 +263,14 @@ def jobs():
 # ==============================
 @admin_bp.route("/delete-job/<int:job_id>")
 def delete_job(job_id):
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
 
-    cur.execute("DELETE FROM jobs WHERE id = ?", (job_id,))
-    conn.commit()
-    conn.close()
+    if not admin_required():
+        return redirect("/login")
+
+    with sqlite3.connect(DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM jobs WHERE id = ?", (job_id,))
+        conn.commit()
 
     return redirect("/admin/jobs")
 
@@ -204,83 +280,19 @@ def delete_job(job_id):
 # ==============================
 @admin_bp.route("/applications")
 def applications():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
 
-    cur.execute("""
-        SELECT id, user_id, job_id, status, applied_at
-        FROM applications
-        ORDER BY datetime(applied_at) DESC
-    """)
-    applications = cur.fetchall()
+    if not admin_required():
+        return redirect("/login")
 
-    conn.close()
+    with sqlite3.connect(DATABASE) as conn:
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
 
-    return render_template(
-        "admin/applications.html",
-        applications=applications
-    )
-# companies
-@admin_bp.route("/companies")
-def companies():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
+        cur.execute("""
+            SELECT id, user_id, job_id, status, applied_at
+            FROM applications
+            ORDER BY datetime(applied_at) DESC
+        """)
+        applications = cur.fetchall()
 
-    cur.execute("""
-        SELECT id, name, email, approved
-        FROM users
-        WHERE role = 'company'
-        ORDER BY id DESC
-    """)
-    companies = cur.fetchall()
-
-    conn.close()
-
-    return render_template(
-        "company/companies_manage.html",
-        companies=companies
-    )
-@admin_bp.route("/reject-company/<int:company_id>")
-def reject_company(company_id):
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
-
-    # Set approved = 0 (Pending)
-    cur.execute("""
-        UPDATE users
-        SET approved = 0
-        WHERE id = ? AND role = 'company'
-    """, (company_id,))
-
-    conn.commit()
-    conn.close()
-
-    return redirect(url_for("admin.companies"))
-@admin_bp.route("/approve-company/<int:company_id>")
-def approve_company(company_id):
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
-
-    # Set approved = 1
-    cur.execute("""
-        UPDATE users
-        SET approved = 1
-        WHERE id = ? AND role = 'company'
-    """, (company_id,))
-
-    conn.commit()
-    conn.close()
-
-    return redirect(url_for("admin.companies"))
-
-def delete_company(company_id):
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
-
-    cur.execute("DELETE FROM users WHERE id = ?", (company_id,))
-    conn.commit()
-    conn.close()
-
-    return redirect("/admin/companies")
+    return render_template("admin/applications.html", applications=applications)

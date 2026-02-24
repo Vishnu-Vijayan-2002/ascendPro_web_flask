@@ -29,6 +29,13 @@ body {
   color:#4f46e5;
 }
 
+.nav-right a{
+  text-decoration:none;
+  color:#4f46e5;
+  font-weight:600;
+  margin-left:20px;
+}
+
 .container {
   max-width:1200px;
   margin:0 auto;
@@ -36,7 +43,7 @@ body {
 }
 
 .header {
-  margin-bottom:3rem;
+  margin-bottom:2rem;
 }
 
 h2 {
@@ -49,6 +56,35 @@ h2 {
 .subtitle {
   color:#6b7280;
   font-size:1.05rem;
+}
+
+.welcome-user{
+  margin-top:10px;
+  font-size:1.1rem;
+  font-weight:600;
+  color:#4f46e5;
+}
+
+/* ✅ Preferred Job Box */
+.preferred-box {
+  margin-top:15px;
+  padding:12px 20px;
+  background:#eef2ff;
+  border-left:4px solid #4f46e5;
+  border-radius:10px;
+  font-weight:600;
+  color:#111827;
+  display:inline-block;
+}
+
+.change-pref {
+  margin-left:15px;
+  text-decoration:none;
+  color:#4f46e5;
+  font-weight:700;
+}
+.change-pref:hover {
+  text-decoration:underline;
 }
 
 .actions-grid {
@@ -163,6 +199,10 @@ h2 {
 
 <nav class="navbar">
   <div class="logo">AscendPro</div>
+  <div class="nav-right">
+    <a href="/applicant/profile">Profile</a>
+    <a href="/logout">Logout</a>
+  </div>
 </nav>
 
 <div class="container">
@@ -170,6 +210,26 @@ h2 {
 <div class="header">
   <h2>Applicant Dashboard</h2>
   <p class="subtitle">Welcome back! Track your job activity in real-time.</p>
+
+  {% if session.get("user_name") %}
+    <div class="welcome-user">
+      Welcome, {{ session["user_name"] }} 👋
+    </div>
+  {% endif %}
+
+  <!-- ✅ Preferred Job Section -->
+  {% if preferred_job %}
+  <div class="preferred-box">
+      🎯 Preferred Job Type:
+      <strong>{{ preferred_job }}</strong>
+      <a href="/applicant/job-preference" class="change-pref">Change</a>
+  </div>
+  {% else %}
+  <div class="preferred-box">
+      ⚠️ No job preference selected.
+      <a href="/applicant/job-preference" class="change-pref">Set Now</a>
+  </div>
+  {% endif %}
 </div>
 
 <div class="actions-grid">
@@ -204,7 +264,6 @@ h2 {
 <div class="stats-section">
   <div class="stats-title">Your Activity</div>
   <div class="stats-grid">
-
     <div class="stat-item">
       <span class="stat-number">{{ total_applications }}</span>
       <span class="stat-label">Applications</span>
@@ -219,11 +278,9 @@ h2 {
       <span class="stat-number">{{ accepted }}</span>
       <span class="stat-label">Offers</span>
     </div>
-
   </div>
 </div>
 
 </div>
-
 </body>
 </html>

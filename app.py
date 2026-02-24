@@ -15,12 +15,12 @@ app.secret_key = "ascendpro_secret"
 # ===============================
 @app.context_processor
 def inject_pending_count():
+    pending_count = 0
     try:
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
-        cur.execute("SELECT COUNT(*) FROM users WHERE approved = 0")
-        pending_count = cur.fetchone()[0]
-        conn.close()
+        with sqlite3.connect(DATABASE, timeout=10) as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT COUNT(*) FROM users WHERE approved = 0")
+            pending_count = cur.fetchone()[0]
     except Exception:
         pending_count = 0
 

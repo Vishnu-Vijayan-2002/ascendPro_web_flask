@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Manage Companies - Admin</title>
+<style>
+body {
+  font-family: Segoe UI;
+  background: #f5f7fb;
+  padding: 40px;
+}
+
+table {
+  width: 100%;
+  background: white;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+th, td {
+  padding: 14px;
+  text-align: left;
+}
+
+th {
+  background: #6366f1;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.pending {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.verify-btn {
+  background: #10b981;
+  color: white;
+}
+
+.delete-btn {
+  background: #ef4444;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Manage Companies</h2>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Account Status</th>
+    <th>Verification</th>
+    <th>Actions</th>
+  </tr>
+
+  {% for company in companies %}
+  <tr>
+    <td>{{ company.id }}</td>
+    <td>{{ company.name }}</td>
+    <td>{{ company.email }}</td>
+
+    <td>
+      {% if company.approved == 1 %}
+        <span class="badge approved">Approved</span>
+      {% else %}
+        <span class="badge pending">Pending</span>
+      {% endif %}
+    </td>
+
+    <td>
+      {% if company.verified == 1 %}
+        <span class="badge approved">Verified</span>
+      {% else %}
+        <span class="badge pending">Not Verified</span>
+      {% endif %}
+    </td>
+
+    <td>
+      {% if company.verified != 1 %}
+        <a href="/admin/verify-company/{{ company.id }}">
+          <button class="verify-btn">Verify</button>
+        </a>
+      {% endif %}
+
+      <a href="/admin/delete-company/{{ company.id }}">
+        <button class="delete-btn">Delete</button>
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+</body>
+</html>

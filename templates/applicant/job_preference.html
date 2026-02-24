@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Select Job Preference</title>
+
+<style>
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body {
+  font-family:'Segoe UI', Roboto, sans-serif;
+  background:linear-gradient(135deg,#eef2ff,#f8fafc);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.container {
+  background:white;
+  width:100%;
+  max-width:500px;
+  padding:40px;
+  border-radius:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.08);
+  animation:fadeIn 0.5s ease;
+}
+
+h2 {
+  text-align:center;
+  margin-bottom:30px;
+  font-size:1.8rem;
+  font-weight:700;
+  color:#111827;
+}
+
+.form-group {
+  margin-bottom:20px;
+  display:flex;
+  flex-direction:column;
+}
+
+label {
+  font-weight:600;
+  margin-bottom:8px;
+  color:#374151;
+}
+
+select {
+  padding:12px 14px;
+  border-radius:10px;
+  border:2px solid #e5e7eb;
+  font-size:1rem;
+  transition:all 0.3s ease;
+  background:#f9fafb;
+}
+
+select:focus {
+  outline:none;
+  border-color:#4f46e5;
+  background:white;
+  box-shadow:0 0 0 3px rgba(79,70,229,0.1);
+}
+
+button {
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:#4f46e5;
+  color:white;
+  font-weight:600;
+  font-size:1rem;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  box-shadow:0 8px 20px rgba(79,70,229,0.3);
+}
+
+button:hover {
+  background:#4338ca;
+  transform:translateY(-2px);
+  box-shadow:0 10px 25px rgba(79,70,229,0.4);
+}
+
+.back-link {
+  display:block;
+  text-align:center;
+  margin-top:15px;
+  text-decoration:none;
+  color:#4f46e5;
+  font-weight:600;
+}
+
+.back-link:hover {
+  text-decoration:underline;
+}
+
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(10px);}
+  to {opacity:1; transform:translateY(0);}
+}
+
+@media(max-width:600px){
+  .container {
+    margin:20px;
+    padding:25px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Select Job Preference</h2>
+
+  <form method="POST" action="/applicant/save-preference">
+
+    <div class="form-group">
+      <label>Job Type</label>
+      <select name="job_type" required>
+        <option value="">Select Type</option>
+        <option>Internship</option>
+        <option>Full-Time</option>
+        <option>Part-Time</option>
+        <option>Contract</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Location Type</label>
+      <select name="location_type" required>
+        <option value="">Select Location</option>
+        <option>Remote</option>
+        <option>Onsite</option>
+        <option>Hybrid</option>
+      </select>
+    </div>
+
+    <button type="submit">Save Preference</button>
+
+  </form>
+
+  <a href="/applicant/dashboard" class="back-link">← Back to Dashboard</a>
+</div>
+
+</body>
+</html>
